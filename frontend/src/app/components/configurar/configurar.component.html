@@ -1,0 +1,47 @@
+<div>Chart Component</div>
+<app-grafica [datosIn]="datos"></app-grafica>
+<div class="chart-container">
+        <div id="SEL_MAG" ALIGN=RIGHT>
+            <form [formGroup]="magnitudForm">
+                <select name="seleccion" id="seleccion" (change)="seleccionMagnitud($event)">
+                    <option *ngFor="let magnitud of magnitudes" selected>
+                        {{magnitud.nombre}}
+                    </option>
+                    <option>Nuevo</option>
+                </select>
+                <input *ngIf="(magnitud).nombre=='Nuevo'" type="text" formControlName="magnitud" placeholder="Nombre" required class="inForm">
+                <button *ngIf="(magnitud).nombre=='Nuevo'" type="submit" (click)="agregarMagnitud()">
+                    Agregar
+                </button>
+                <button *ngIf="(magnitud).nombre!='Nuevo'" id="Salvar" (click)="salvarMagnitud()" >Salvar</button>
+                <button *ngIf="(magnitud).nombre!='Nuevo'" id="Borrar" (click)="borrarMagnitud()" >Borrar</button>
+                <div ALIGN="RIGHT">
+                <button *ngIf="(perfil.nombre)!='Nuevo'&& (magnitud).nombre!='Nuevo'" 
+                   type="submit" (click)="asociarMagnitud()">
+                  Añadir a {{perfil.nombre}}
+                </button>
+                </div>
+            </form>
+        </div>
+      
+    <div id="SEL_PERFIL" ALIGN=LEFT>
+        <div>Selección Perfil</div>
+        <form [formGroup]="perfilForm">
+            <select name="seleccion" id="seleccion" (change)="seleccionPerfil($event)">
+                <option *ngFor="let perfil of perfiles" selected>
+                    {{perfil.nombre}}
+                </option>
+                <option>Nuevo</option>
+            </select>
+            <input *ngIf="(perfil.nombre)=='Nuevo'"  type="text" formControlName="perfil" required class="inForm">
+            <button *ngIf="(perfil.nombre)=='Nuevo'" type="submit" [disabled]="!perfilForm.valid"(click)="agregarPerfil()">
+                Agregar
+            </button>
+        </form>
+    </div>
+
+    <div name="Botones_magnitudes" ALIGN="LEFT">
+            <a><button *ngFor="let magnitud of perfil.magnitudes" (click)="desasociarMagnitud(magnitud)"> {{magnitud.nombre}} X</button></a>
+    </div>
+
+</div>
