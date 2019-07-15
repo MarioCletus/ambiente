@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
-import { ChartsServiceService } from 'src/app/services/charts-service.service';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { Usuario } from 'src/app/classes/usuario';
 
 
@@ -15,7 +15,7 @@ export class RegistroComponent implements OnInit {
     passWord: new FormControl('')
   });
   
-  constructor(private formBuilder: FormBuilder,private servicio:ChartsServiceService ) { }
+  constructor(private formBuilder: FormBuilder,private servicio:BackendServiceService ) { }
   ngOnInit() {
  /*   this.userForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],

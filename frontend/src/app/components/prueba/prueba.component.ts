@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Magnitud } from 'src/app/classes/magnitud';
-import { ChartsServiceService } from 'src/app/services/charts-service.service';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 
 @Component({
   selector: 'app-prueba',
@@ -10,7 +10,7 @@ import { ChartsServiceService } from 'src/app/services/charts-service.service';
 export class PruebaComponent implements OnInit {
 
   misDatos;
-  constructor(private service:ChartsServiceService) { }
+  constructor(private service:BackendServiceService) { }
 
   ngOnInit() {
     let magnitudes:Array<Magnitud>;

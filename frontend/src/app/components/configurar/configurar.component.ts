@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, HostListener, HostBinding, ViewChild } from '@angular/core';
 import { Magnitud } from 'src/app/classes/magnitud';
-import { ChartsServiceService } from 'src/app/services/charts-service.service';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Perfil } from 'src/app/classes/perfil';
 import { GraficaComponent } from '../grafica/grafica.component';
@@ -12,31 +12,43 @@ import { GraficaComponent } from '../grafica/grafica.component';
 })
 export class ConfigurarComponent implements OnInit {
 
- // we could pass lots of thing to the HostBinding function. 
-  // like class.valid or attr.required etc.
-
+ 
   private magnitudes : Array<Magnitud>=[];
   private magnitud:Magnitud={id:0,nombre:"",listOfFloats:[]};
   private perfiles : Array<Perfil>=[];
   private perfil:Perfil={id:0,nombre:"",magnitudes:[]};
   private datos;
 
+  magnitudForm = new FormGroup({
+    magnitud: new FormControl(''),
+  });
+  perfilForm = new FormGroup({
+    perfil: new FormControl(''),
+  });
+  
   @ViewChild(GraficaComponent) grafica: GraficaComponent;
 
-  constructor(private servicio:ChartsServiceService) {
+  constructor(private servicio:BackendServiceService) {
+    this.cargarDatos();
   }
   
-  ngOnInit() {
+  ngOnInit(){
+    this.cargarDatos();
+  }
+  ngOnChanges() {
+    console.log("No deberia ver esto");
     this.cargarDatos();
   }
 
   cargarDatos(){
     this.servicio.getMagnitudes().subscribe((data: Magnitud[]) =>{
       this.magnitudes=data;//Carga los datos en magnitudes
-      console.log("Magnitudes al inicio:",data);
+      console.log("Magnitudes en cargar datos:",data);
       if(data.length){
         this.magnitud=data[data.length-1];
         this.datos=data[data.length-1].listOfFloats;
+        console.log("En este instante cargue los datos desde la BD");
+        console.log(this.magnitud);
       }
     });
     this.servicio.getPerfiles().subscribe((data: Perfil[]) =>{
@@ -47,13 +59,6 @@ export class ConfigurarComponent implements OnInit {
     });
   }
 
-
-magnitudForm = new FormGroup({
-  magnitud: new FormControl(''),
-});
-perfilForm = new FormGroup({
-  perfil: new FormControl(''),
-});
   //Selecciona una nombre desde el dropdown list y refresca el grafico en pantalla.
   public seleccionMagnitud(event){
     let index=event.target.selectedIndex;
@@ -69,23 +74,25 @@ perfilForm = new FormGroup({
   }
 
   agregarMagnitud() {
-    console.log("Agregue: ",this.magnitudForm.get('magnitud').value,this.magnitudForm);
-    let etiqueta=this.magnitudForm.get('magnitud').value;
-    this.magnitudForm.get('magnitud').setValue('');
+    let titulo=this.magnitudForm.get('magnitud').value;
     let valores=this.grafica.getValores();
-    console.log("agregar: ",this.servicio.nuevoMagnitud(valores,etiqueta));
+    this.magnitudForm.get('magnitud').setValue('');
+    this.servicio.nuevoMagnitud(valores,titulo).subscribe(()=>this.cargarDatos());
     this.cargarDatos();
+    console.log("Cree una nueva magnitud");
+    console.log("Lisata de magnitues",this.magnitudes);
   }
 
   borrarMagnitud(){
-    console.log("borrar",this.magnitud);
-    this.servicio.borrarMagnitud(this.magnitud);
+    this.servicio.borrarMagnitud(this.magnitud).subscribe(()=>this.cargarDatos());
     this.cargarDatos();
+    console.log("Borre la magnitud",this.magnitud);
+    console.log("Lista de magnitues",this.magnitudes);
   }
 
   salvarMagnitud(){
     console.log("salvar");
-    this.servicio.editarMagnitud(this.magnitud);
+    this.servicio.editarMagnitud(this.magnitud).subscribe();
   }
 
   //Funciones de perfil
@@ -107,32 +114,34 @@ perfilForm = new FormGroup({
 
   agregarPerfil(){
     let perfil:Perfil={id:null,nombre:null,magnitudes:[]};
-    console.log("Agregue: ",this.perfilForm.get('perfil').value);
     let nombre=this.perfilForm.get('perfil').value;
     this.perfilForm.get('perfil').setValue('');
     perfil.nombre=nombre;
-    console.log("agregar: ",this.servicio.nuevoPerfil(perfil));
-    this.cargarDatos();
+    this.servicio.nuevoPerfil(perfil).subscribe(()=>this.cargarDatos())
   }
   
   asociarMagnitud(){
-    let existeIndice=this.perfil.magnitudes.indexOf(this.magnitud);
-    if(existeIndice!=-1)
+    let yaEstaAsociada=false;
+    this.perfil.magnitudes.forEach(mag=>{
+      if(mag.nombre==this.magnitud.nombre){
+        yaEstaAsociada=true;
+        return;
+      }
+    });
+    if(yaEstaAsociada)
       return;
-
-    if(!this.perfil.magnitudes){
+    if(!this.perfil.magnitudes){//Si perfil.magnitudes no existe lo creo vacio.
       this.perfil.magnitudes=[];}
 
     this.perfil.magnitudes.push(this.magnitud);
-    this.servicio.editarPerfil(this.perfil);
+    this.servicio.editarPerfil(this.perfil).subscribe();
 
   }
 
   desasociarMagnitud(magnitud){
-    console.log("Desasociar: ",magnitud);
     let pos = this.perfil.magnitudes.indexOf(magnitud);
-    console.log("Desasocie",pos,magnitud);
     this.perfil.magnitudes.splice(pos, 1);
-    this.servicio.editarPerfil(this.perfil);
+    this.servicio.editarPerfil(this.perfil).subscribe();
   }
+
 }

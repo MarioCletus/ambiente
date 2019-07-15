@@ -17,7 +17,7 @@ export class ActualComponent implements OnInit {
   }
   enviarMensaje() {
     console.log("Enviar mensaje");
-    this.grafica.refreshChart('titulo',this.datos1);
+    this.grafica.setValores('titulo',this.datos1);
   }
   
 }

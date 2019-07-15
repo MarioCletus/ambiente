@@ -33,10 +33,6 @@ public class Perfil {
 		this.nombre = nombre;
 	}
 
-//	@OneToMany(cascade= {CascadeType.ALL},mappedBy="perfil_id",targetEntity=Magnitud.class)
-//	private Set <Magnitud> magnitudes;
-
-	
 	@ManyToMany
 	@JoinTable(name="perfil_magnitudes"
 		,joinColumns=@JoinColumn(name="perfil_id")

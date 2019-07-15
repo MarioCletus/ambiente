@@ -1,11 +1,10 @@
-<div>Chart Component</div>
 <app-grafica [datosIn]="datos"></app-grafica>
 <div class="chart-container">
         <div id="SEL_MAG" ALIGN=RIGHT>
             <form [formGroup]="magnitudForm">
                 <select name="seleccion" id="seleccion" (change)="seleccionMagnitud($event)">
                     <option *ngFor="let magnitud of magnitudes" selected>
-                        {{magnitud.nombre}}
+                        {{magnitud.nombre}} 
                     </option>
                     <option>Nuevo</option>
                 </select>
@@ -19,7 +18,6 @@
                 <button *ngIf="(perfil.nombre)!='Nuevo'&& (magnitud).nombre!='Nuevo'" 
                    type="submit" (click)="asociarMagnitud()">
                   Añadir a {{perfil.nombre}}
-                  Esta linea no va
                 </button>
                 </div>
             </form>

@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input, HostListener, HostBinding, ViewChild, OnChanges } from '@angular/core';
 import { Magnitud } from 'src/app/classes/magnitud';
-import { ChartsServiceService } from 'src/app/services/charts-service.service';
+import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Perfil } from 'src/app/classes/perfil';
 import { GraficaComponent } from '../grafica/grafica.component';
@@ -11,14 +11,12 @@ import { GraficaComponent } from '../grafica/grafica.component';
 })
 export class ChartsComponent implements OnChanges {
 
- // we could pass lots of thing to the HostBinding function. 
-  // like class.valid or attr.required etc.
-
   private magnitudes : Array<Magnitud>=[];
   private magnitud:Magnitud={id:0,nombre:"",listOfFloats:[]};
   private perfiles : Array<Perfil>=[];
   private perfil:Perfil={id:0,nombre:"",magnitudes:[]};
   private datos;
+
   magnitudForm = new FormGroup({
     magnitud: new FormControl(''),
   });
@@ -28,7 +26,7 @@ export class ChartsComponent implements OnChanges {
   
   @ViewChild(GraficaComponent) grafica: GraficaComponent;
 
-  constructor(private servicio:ChartsServiceService) {
+  constructor(private servicio:BackendServiceService) {
     this.cargarDatos();
   }
   
@@ -53,10 +51,7 @@ export class ChartsComponent implements OnChanges {
         this.perfil=data[data.length-1];  
       }
     });
-
-
   }
-
 
   //Selecciona una nombre desde el dropdown list y refresca el grafico en pantalla.
   public seleccionMagnitud(event){
@@ -76,14 +71,14 @@ export class ChartsComponent implements OnChanges {
     let titulo=this.magnitudForm.get('magnitud').value;
     let valores=this.grafica.getValores();
     this.magnitudForm.get('magnitud').setValue('');
-    this.servicio.nuevoMagnitud(valores,titulo);
+    this.servicio.nuevoMagnitud(valores,titulo).subscribe(()=>this.cargarDatos());
     this.cargarDatos();
     console.log("Cree una nueva magnitud");
     console.log("Lisata de magnitues",this.magnitudes);
   }
 
   borrarMagnitud(){
-    this.servicio.borrarMagnitud(this.magnitud);
+    this.servicio.borrarMagnitud(this.magnitud).subscribe(()=>this.cargarDatos());
     this.cargarDatos();
     console.log("Borre la magnitud",this.magnitud);
     console.log("Lista de magnitues",this.magnitudes);
@@ -91,7 +86,7 @@ export class ChartsComponent implements OnChanges {
 
   salvarMagnitud(){
     console.log("salvar");
-    this.servicio.editarMagnitud(this.magnitud);
+    this.servicio.editarMagnitud(this.magnitud).subscribe();
   }
 
   //Funciones de perfil
@@ -116,9 +111,7 @@ export class ChartsComponent implements OnChanges {
     let nombre=this.perfilForm.get('perfil').value;
     this.perfilForm.get('perfil').setValue('');
     perfil.nombre=nombre;
-    this.cargarDatos();
-    console.log("Cree un nuevo perfil");
-    console.log("Lista de magnitues",this.perfiles);
+    this.servicio.nuevoPerfil(perfil).subscribe(()=>this.cargarDatos())
   }
   
   asociarMagnitud(){
@@ -130,7 +123,7 @@ export class ChartsComponent implements OnChanges {
       this.perfil.magnitudes=[];}
 
     this.perfil.magnitudes.push(this.magnitud);
-    this.servicio.editarPerfil(this.perfil);
+    this.servicio.editarPerfil(this.perfil).subscribe(()=>this.cargarDatos());
 
   }
 
@@ -139,7 +132,7 @@ export class ChartsComponent implements OnChanges {
     let pos = this.perfil.magnitudes.indexOf(magnitud);
     console.log("Desasocie",pos,magnitud);
     this.perfil.magnitudes.splice(pos, 1);
-    this.servicio.editarPerfil(this.perfil);
+    this.servicio.editarPerfil(this.perfil).subscribe(()=>this.cargarDatos());
   }
 
 }
