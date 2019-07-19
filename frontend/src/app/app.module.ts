@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
-import { ChartsComponent } from './components/charts/charts.component';
 import { ChartModule } from 'angular-highcharts';
 import { CalendarioComponent } from './components/calendario/calendario.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,11 +19,13 @@ import { ConfigurarComponent } from './components/configurar/configurar.componen
 import { GraficaComponent } from './components/grafica/grafica.component';
 import { PruebaComponent } from './components/prueba/prueba.component';
 import { PruebaGraficaComponent } from './components/prueba-grafica/prueba-grafica.component';
+import { PruebaConfigComponent } from './components/prueba-config/prueba-config.component';
+import { GlobalService } from './services/global.service';
+import { NuevoCalendarioComponent } from './components/nuevo-calendario/nuevo-calendario.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChartsComponent,
     CalendarioComponent,
     NavegadorComponent,
     RegistroComponent,
@@ -34,6 +35,8 @@ import { PruebaGraficaComponent } from './components/prueba-grafica/prueba-grafi
     GraficaComponent,
     PruebaComponent,
     PruebaGraficaComponent,
+    PruebaConfigComponent,
+    NuevoCalendarioComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +49,7 @@ import { PruebaGraficaComponent } from './components/prueba-grafica/prueba-grafi
     IgxDialogModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [GlobalService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -16,7 +16,6 @@ export class ActualComponent implements OnInit {
   ngOnInit() {
   }
   enviarMensaje() {
-    console.log("Enviar mensaje");
     this.grafica.setValores('titulo',this.datos1);
   }
   

@@ -1,0 +1,11 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <p class="h4 mb-4">Ingrese nombre de ambiente</p>
+    <div class="form-row mb-4">
+       <div class="col">
+            <input type="text" formControlName="nombre" class="form-control" placeholder="nombre">
+       </div>
+    </div>
+    <button type="submit">Aceptar</button>
+    <hr>
+  
+  </form>

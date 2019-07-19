@@ -23,7 +23,6 @@ public class MagnitudServiceImp implements MagnitudService{
 
 	@Override
 	public void borrarMagnitud(Integer id) {
-		
 		for (Magnitud magnitud:repo.findAll()) {
 			if (magnitud.getId().equals(id)) {
 				repo.delete(magnitud);

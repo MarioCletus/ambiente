@@ -16,44 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AmbienteRestController {
 	@Autowired
-	private PerfilServiceImp service;
-	
-	@CrossOrigin
-	@GetMapping
-	public String index() {
-		System.out.print("Index");
-		return "Index";
-	}
-
-	@CrossOrigin
-	@GetMapping("/dia")
-	public List<Perfil> getPerfil(){
-		System.out.print("Get Perfil");
-		return service.getPerfiles();
-	}
-
-	@CrossOrigin
-	@GetMapping("/dia/{ix}")
-	public Optional<Perfil> getDiaIx(@PathVariable Integer ix){
-		System.out.print("Get Dia");
-		return service.getPerfil(ix);
-	}
-	
-	@CrossOrigin
-	@PostMapping("/dia")
-	public void DiaNuevo(@RequestBody Perfil perfil) {
-		System.out.print("Post Dia");
-		service.nuevoPerfil(perfil);
-	}
-	
-	@CrossOrigin
-	@PutMapping("/dia")
-	public void actualizarDia(@RequestBody Perfil perfil) {
-		System.out.print("Put Dia");
-		service.editarPerfil(perfil);
-	}
-
-	@Autowired
 	private MagnitudServiceImp magnitudService;
 	
 	@CrossOrigin
@@ -117,6 +79,7 @@ public class AmbienteRestController {
 	@CrossOrigin
 	@PostMapping("/perfil")
 	public void PefilNuevo(@RequestBody Perfil perfil) {
+		System.out.println("Post perfil: " + perfil.getId() + "  " + perfil.getNombre() + "  " + perfil.getMagnitudes().size());
 		perfilService.nuevoPerfil(perfil);
 	}
 	
@@ -149,7 +112,7 @@ public class AmbienteRestController {
 		@CrossOrigin
 		@GetMapping("/usuario/{ix}")
 		public Optional<Usuario> getUsuarioIx(@PathVariable Integer ix){
-			System.out.print("Get perfil ix: ");
+			System.out.print("Get usuario ix: ");
 			return usuarioService.getUsuario(ix);
 		}
 		
@@ -172,13 +135,113 @@ public class AmbienteRestController {
 			System.out.println("Delete usuario:");
 			usuarioService.borrarUsuario(id);
 		}
+		
+		@CrossOrigin
+		@PutMapping("/usuario/magnitud")
+		public void usuarioAddMagnitud(@RequestBody WrapperUsrMag wrapper) {
+			Usuario usuario;
+			Magnitud magnitud;
+			usuario=wrapper.usuario;
+			magnitud=wrapper.magnitud;
+			System.out.println("Put usuarioAddMagnitud:" + usuario.getId() + " " + magnitud.getNombre());
+			System.out.println("{" 
+					+ usuario.getId()       + "    "
+					+ usuario.getNombre()   + "    "
+					+ usuario.getApellido() + "    "
+					+ usuario.getUserName() + "    "
+					+ usuario.getPassword() + "    "
+					+ "cultivos: " + usuario.getCultivos().size() + "    "
+					+ "calendarios: " + usuario.getCalendarios().size() + "    "
+					+ "perfiles: " + usuario.getPerfiles().size() + "    "
+					+ "magnitudes: " + usuario.getMagnitudes().size() + "    "
+					+ "}"
+					);
+			usuarioService.usuarioAddMagnitud(usuario,magnitud);
+		}
 	
 		//Servicio de registro.		
 		@CrossOrigin
 		@PostMapping("/password")
-		public boolean isRegistered(@RequestBody Usuario usuario) {
+		public Usuario isRegistered(@RequestBody Usuario usuario) {
 			return usuarioService.isRegsitered(usuario);
 		}
+		//Servicios para calendario
+		
+		@Autowired
+		private CalendarioServiceImp calendarioService;
+		
+		@CrossOrigin
+		@GetMapping("/calendario")
+		public List<Calendario> getCalendarios(){
+			System.out.println("Get calendarios:");
+			return calendarioService.getCalendarios();
+		}
+
+		@CrossOrigin
+		@GetMapping("/calendario/{ix}")
+		public Optional<Calendario> getCalendarioIx(@PathVariable Integer ix){
+			System.out.print("Get calendario ix: ");
+			return calendarioService.getCalendario(ix);
+		}
+		
+		@CrossOrigin
+		@PostMapping("/calendario")
+		public void nuevoCalendario(@RequestBody Calendario calendario) {
+			calendarioService.nuevoCalendario(calendario);
+		}
+		
+		@CrossOrigin
+		@PutMapping("/calendario")
+		public void actualizarCalendario(@RequestBody Calendario calendario) {
+			System.out.println("Put Calendario:");
+			calendarioService.editarCalendario(calendario);
+		}
+
+		@CrossOrigin
+		@DeleteMapping("/calendario/{id}")
+		public void borrarCalendario(@PathVariable Integer id) {
+			System.out.println("Delete Calendario:");
+			calendarioService.borrarCalendario(id);
+		}
 	
+		//Servicios para cultivo
+		
+		@Autowired
+		private CultivoServiceImp cultivoService;
+		
+		@CrossOrigin
+		@GetMapping("/cultivo")
+		public List<Cultivo> getCultivo(){
+			System.out.println("Get cultivos:");
+			return cultivoService.getCultivos();
+		}
+
+		@CrossOrigin
+		@GetMapping("/cultivo/{ix}")
+		public Optional<Cultivo> getCultivoIx(@PathVariable Integer ix){
+			System.out.print("Get cultivo ix: ");
+			return cultivoService.getCultivo(ix);
+		}
+		
+		@CrossOrigin
+		@PostMapping("/cultivo")
+		public void nuevoCultivo(@RequestBody Cultivo cultivo) {
+			System.out.println("Post cultivo: " + cultivo.getId() + "  " + cultivo.getNombre());
+			cultivoService.nuevoCultivo(cultivo);
+		}
+		
+		@CrossOrigin
+		@PutMapping("/cultivo")
+		public void actualizarCultivo(@RequestBody Cultivo cultivo) {
+			System.out.println("Put cultivo:");
+			cultivoService.editarCultivo(cultivo);
+		}
+
+		@CrossOrigin
+		@DeleteMapping("/cultivo/{id}")
+		public void borrarCultivo(@PathVariable Integer id) {
+			System.out.println("Delete cultivo:");
+			cultivoService.borrarCultivo(id);
+		}
 
 }

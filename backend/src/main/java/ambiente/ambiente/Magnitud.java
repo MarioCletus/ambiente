@@ -2,6 +2,8 @@ package ambiente.ambiente;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -19,11 +21,8 @@ public class Magnitud {
 	private Integer id;
 	
 	@ElementCollection
-	private Collection<Float> listOfFloats = new ArrayList<Float>();
-	public Collection<Float> getListOfFloats() {
-	return listOfFloats;
-	}
-
+	private List<Float> listOfFloats = new ArrayList<Float>();
+	
 	@Column(name="nombre")
 	private String nombre;
 
@@ -44,4 +43,14 @@ public class Magnitud {
 		this.nombre = nombre;
 	}
 
+	public List<Float> getListOfFloats() {
+	return this.listOfFloats;
+	}
+
+	public void setListOfFloats(List <Float> valores) {
+		this.listOfFloats=valores;
+	
+	}
+
+	
 }

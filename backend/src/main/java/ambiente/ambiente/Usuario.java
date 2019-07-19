@@ -1,13 +1,16 @@
 package ambiente.ambiente;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Usuario {
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
@@ -25,8 +28,44 @@ public class Usuario {
     @Column(name = "password")
 	private String password;
     
-    
-    public Integer getId() {
+	@OneToMany(targetEntity=Calendario.class)
+	private List <Calendario> calendarios;    
+
+	@OneToMany(targetEntity=Cultivo.class)
+	private List <Cultivo> cultivos;    
+
+	@OneToMany(targetEntity=Perfil.class)
+	private List <Perfil> perfiles;    
+
+	@OneToMany(targetEntity=Magnitud.class)
+	private List <Magnitud> magnitudes;    
+
+	public List<Perfil> getPerfiles() {
+		return perfiles;
+	}
+
+	public void setPerfiles(List<Perfil> perfiles) {
+		this.perfiles = perfiles;
+	}
+
+	public List<Magnitud> getMagnitudes() {
+		return magnitudes;
+	}
+
+	public void setMagnitudes(List<Magnitud> magnitudes) {
+		this.magnitudes = magnitudes;
+	}
+
+
+	public List<Cultivo> getCultivos() {
+		return cultivos;
+	}
+
+	public void setCultivos(List<Cultivo> cultivos) {
+		this.cultivos = cultivos;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
@@ -66,4 +105,13 @@ public class Usuario {
 		this.password = password;
 	}
 
+	public List<Calendario> getCalendarios() {
+		return this.calendarios;
+	}
+
+	public void setCalendarios(List<Calendario> calendarios) {
+		this.calendarios = calendarios;
+	}
+
+	
 }

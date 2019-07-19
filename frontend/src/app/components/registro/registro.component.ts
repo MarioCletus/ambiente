@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { Usuario } from 'src/app/classes/usuario';
+import { GlobalService } from 'src/app/services/global.service';
 
 
 @Component({
@@ -11,28 +12,63 @@ import { Usuario } from 'src/app/classes/usuario';
 })
 export class RegistroComponent implements OnInit {
   userForm = new FormGroup({
+    nombre: new FormControl(''),
+    apellido: new FormControl(''),
     nombreUsuario: new FormControl(''),
     passWord: new FormControl('')
   });
+  registro=false;
+  estaRegistrado=false;
   
-  constructor(private formBuilder: FormBuilder,private servicio:BackendServiceService ) { }
+  constructor(private formBuilder: FormBuilder,private servicio:BackendServiceService,private global:GlobalService ) { }
   ngOnInit() {
- /*   this.userForm = this.formBuilder.group({
-      firstName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
-      lastName: ['',[Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
+/*    this.userForm = this.formBuilder.group({
+      nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
+      apellido: ['',[Validators.required, Validators.pattern('^[a-zA-Z]+$')]]
       email: ['', [Validators.required, Validators.email]]
     });*/
   }
 
   onSubmit(){
     if(this.userForm.valid){
-      console.log(this.userForm.get('nombreUsuario').value);
-      console.log(this.userForm.get('passWord').value);
-      let usuario:Usuario={id:null,nombre:'',apellido:'',password:this.userForm.get('passWord').value,userName:this.userForm.get('nombreUsuario').value};
-      this.servicio.isRegistered(usuario);
+      let usuario:Usuario=new Usuario();
+      usuario.password=this.userForm.get('passWord').value;
+      usuario.userName=this.userForm.get('nombreUsuario').value;
+      this.servicio.isRegistered(usuario).subscribe((respuesta:Usuario)=>{usuario=respuesta
+          if(usuario){
+            console.log("Esta registrado",usuario);
+            this.global.usuario=usuario;
+          }
+          else{
+            console.log("No esta registrado");
+            this.global.usuario=null;
+          }
+      });
     }
   }
-  Registrar(){
-    
+  registrar(){
+    this.registro=true;
+  }
+  guardarUsuario(){
+    let usuario:Usuario=new Usuario();
+    usuario.nombre=this.userForm.get('nombre').value;
+    usuario.apellido=this.userForm.get('apellido').value;
+    usuario.userName=this.userForm.get('nombreUsuario').value;
+    usuario.password=this.userForm.get('passWord').value;
+    usuario.cultivos=[];
+    usuario.calendarios=[];
+    usuario.magnitudes=[];
+    usuario.perfiles=[];
+    this.servicio.nuevoUsuario(usuario).subscribe(()=>{console.log("Se creo el usuario",usuario.userName)});
+
+    this.userForm.get('nombre').setValue('');
+    this.userForm.get('apellido').setValue('');
+    this.userForm.get('nombreUsuario').setValue('');
+    this.userForm.get('passWord').setValue('');
+
+    this.registro=false;
+  }
+  cancelRegistro(){
+    this.registro=false;
   }
 }

@@ -1,16 +1,13 @@
 package ambiente.ambiente;
 
+import java.util.List;
 import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-
+import javax.persistence.OneToMany;
 
 
 @Entity
@@ -23,29 +20,16 @@ public class Perfil {
 	
     @Column(name = "nombre")
 	private String nombre;
-	
 
-    public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	@ManyToMany
-	@JoinTable(name="perfil_magnitudes"
-		,joinColumns=@JoinColumn(name="perfil_id")
-		,inverseJoinColumns=@JoinColumn(name="magnitud_id")
-	)
-	private Set <Magnitud> magnitudes;
+	@OneToMany(targetEntity=Magnitud.class)
+	private List <Magnitud> magnitudes;
 	
 	
-	public Set<Magnitud> getMagnitudes() {
+	public List<Magnitud> getMagnitudes() {
 		return magnitudes;
 	}
 
-	public void setMagnitudes(Set<Magnitud> magnitudes) {
+	public void setMagnitudes(List<Magnitud> magnitudes) {
 		this.magnitudes = magnitudes;
 	}
 
@@ -55,6 +39,13 @@ public class Perfil {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+    public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 }

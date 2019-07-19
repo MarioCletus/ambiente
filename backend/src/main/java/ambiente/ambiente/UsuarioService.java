@@ -9,5 +9,5 @@ public interface UsuarioService {
 	void borrarUsuario(Integer id);
 	Optional<Usuario> getUsuario(Integer id);
 	List<Usuario> getUsuarios();
-	boolean isRegsitered(Usuario usuario);
+	Usuario isRegsitered(Usuario usuario);
 }

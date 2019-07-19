@@ -1,11 +1,11 @@
 <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
-    <a class="navbar-brand" >Acciones:</a>
+    <a class="navbar-brand" >Ambiente</a>
     <a class="navbar-brand" routerLink="/Prueba" routerLinkActive="active" >Prueba</a>
-    <a class="navbar-brand" routerLink="/Charts" routerLinkActive="active" >Charts</a>
+    <a class="navbar-brand" routerLink="/PruebaConfig" routerLinkActive="active" >Prueba Configuracion</a>
     <a class="navbar-brand" routerLink="/Principal" routerLinkActive="active" >Pagina principal</a>
-    <a class="navbar-brand" routerLink="/Grafica" routerLinkActive="active" >Grafica</a>
     <a class="navbar-brand" routerLink="/Actual" routerLinkActive="active" >Estado actual</a>
     <a class="navbar-brand" routerLink="/Configuracion" routerLinkActive="active" >Configurar Ambiente</a>
-    <a class="navbar-brand" routerLink="/Registro" routerLinkActive="active">Iniciar Sesion</a>
+    <a *ngIf="!global.hayUsuario" class="navbar-brand" routerLink="/Registro" routerLinkActive="active">Iniciar Sesion</a>
+    <a *ngIf="global.hayUsuario"class="navbar-brand" routerLink="/Registro" routerLinkActive="active">{{global.usuario.nombreUsuario}}</a>
 </nav>
 <router-outlet></router-outlet>

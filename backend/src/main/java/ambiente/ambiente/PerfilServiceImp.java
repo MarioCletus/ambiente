@@ -24,13 +24,9 @@ public class PerfilServiceImp implements PerfilService{
 
 	@Override
 	public void borrarPerfil(Integer id) {
-		
-		for (Perfil perfil:repo.findAll()) {
-			if (perfil.getId().equals(id)) {
-				repo.delete(perfil);
-				return;
-			}
-		}
+	     Optional<Perfil> optional;
+	     optional=getPerfil(id);
+	     optional.ifPresent(perfil->{repo.delete(perfil);});
 			
 	}
 

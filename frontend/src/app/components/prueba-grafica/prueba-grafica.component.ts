@@ -77,7 +77,6 @@ export class PruebaGraficaComponent implements OnChanges {
   }
   ngOnChanges()
   {
-    console.log("OnChange");
     if(this.myChart.ref)
         this.myChart.removeSeries(this.myChart.ref.series.length-1);
     this.myChart.addSeries({name:'titulo',data:this.datosIn,type: 'line'},true,false);
@@ -87,7 +86,6 @@ export class PruebaGraficaComponent implements OnChanges {
 /**************************************************************************** */
   //Se le pasa una lista de valores y titulo y refresca la grafica en pantalla
   public setValores(titulo:string,valores:number[]){
-    console.log("this.refreshChart",valores);
     if(this.myChart.ref)
       this.myChart.removeSeries(this.myChart.ref.series.length-1);
     this.myChart.addSeries({name:titulo,data:valores,type: 'line'},true,false);
