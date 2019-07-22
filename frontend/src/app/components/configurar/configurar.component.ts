@@ -38,6 +38,9 @@ export class ConfigurarComponent implements OnInit {
   private magnitudForm = new FormGroup({
     magnitud: new FormControl(''),
   });
+  private cultivoForm = new FormGroup({
+    cultivo: new FormControl(''),
+  });
   
   @ViewChild(GraficaComponent) grafica: GraficaComponent;
 
@@ -75,8 +78,10 @@ cargarDatos(){
     }
   });
 }
-
-//Selecciona una nombre desde el dropdown list y refresca el grafico en pantalla.
+/***************************************************************
+ *Selecciona una nombre desde el dropdown list y refresca 
+ el grafico en pantalla. 
+ ***************************************************************/
 public seleccionMagnitud(event){
   console.log("Seleccion de magnitud");
   let index=event.target.selectedIndex;
@@ -84,7 +89,11 @@ public seleccionMagnitud(event){
   this.datos=this.magnitud.listOfFloats;
   this.grafica.setValores('chart component',this.magnitud.listOfFloats);
 }
-
+/*****************************************************
+ * Se agrega la magnitud con los valores de la grafica 
+ * y el nombre que se escribe en el input magnitudForm
+ * La magnitud estará asociada al usuario global.
+ ****************************************************/
 agregarMagnitud() {
   let nombre=this.magnitudForm.get('magnitud').value;
   console.log(nombre);
@@ -93,13 +102,44 @@ agregarMagnitud() {
   let magnitud:Magnitud=new Magnitud();
   magnitud.listOfFloats=valores;
   magnitud.nombre=nombre;
-  this.servicio.usuarioAddMagnitud(this.usuario,magnitud).subscribe(()=>{this.cargarDatos()});
+  this.servicio.usuarioAddMagnitud(this.usuario,magnitud).subscribe(()=>{
+    this.servicio.getUsuario(this.usuario.id).subscribe((usr:Usuario)=>{
+      this.usuario=usr;
+      this.global.usuario=this.usuario;
+      console.log("Usuario en agregar magnitud:",this.usuario,this.global.usuario);
+      this.cargarDatos()
+    });
+  });
 }
 
+/*******************************************************************
+ * Borra la magnitud this.magnitud del usuario y la base de datos.
+ * Como está asociada al usuario primero hay que borrarla del 
+ * usuario y luego se elimina la magnitud de la base de datos.
+********************************************************************/
 borrarMagnitud(){
-  this.servicio.borrarMagnitud(this.magnitud).subscribe(()=>this.cargarDatos());
+  console.log("this.magnitud",this.magnitud.id);
+  console.log("Usuario en borrar magnitud antes",this.usuario,this.global.usuario);
+  let index=this.usuario.magnitudes.findIndex((mag:Magnitud)=>{
+    return mag.id===this.magnitud.id;
+  });
+  console.log("Index: ",index );
+  this.usuario.magnitudes.splice(index,1);
+  this.servicio.editarUsuario(this.usuario).subscribe(()=>{
+    this.servicio.getUsuario(this.usuario.id).subscribe((usr:Usuario)=>{
+      this.usuario=usr;
+      this.global.usuario=this.usuario;
+      this.servicio.borrarMagnitud(this.magnitud).subscribe(()=>{
+        console.log("Usuario despues:",this.usuario);
+        this.cargarDatos();
+      });
+    });
+  });
 }
-
+/**************************************************
+ * Guarda en la magnitud los datos editados en la
+ * grafica.
+ **************************************************/
 salvarMagnitud(){
   this.servicio.editarMagnitud(this.magnitud).subscribe();
 }
@@ -162,6 +202,13 @@ seleccionCalendario(event){
 seleccionCultivo(event){
   let index=event.target.selectedIndex;
   this.cultivo=this.cultivos[index];
+}
+
+agregarCultivo(){
+  
+}
+borrarCultivo(){
+  
 }
 
 

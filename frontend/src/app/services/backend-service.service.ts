@@ -51,6 +51,12 @@ getPerfiles(){
   return respuesta;
 }
 
+getPerfilesUsuario(usuario:Usuario){
+  let urlValores='http://localhost:8080/perfil/usuario/';
+  let respuesta=this._http.get(urlValores + usuario.id);
+  return respuesta;
+}
+
 nuevoPerfil(perfil:Perfil){
   let urlSalvar='http://localhost:8080/perfil';
   let respuesta=this._http.post(urlSalvar,perfil);
@@ -76,6 +82,11 @@ borrarPerfil(perfil:Perfil){
 private urlUsuario='http://localhost:8080/usuario';
 getUsuarios(){
   let respuesta=this._http.get(this.urlUsuario);
+  return respuesta;
+}
+
+getUsuario(id:number){
+  let respuesta=this._http.get(this.urlUsuario+'/'+id);
   return respuesta;
 }
 

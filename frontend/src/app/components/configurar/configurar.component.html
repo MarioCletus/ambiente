@@ -3,7 +3,7 @@
 <div class="config-container">
     <form [formGroup]="magnitudForm">
         <a>Magnitud </a>
-        <select name="seleccion" id="seleccion" (change)="seleccionMagnitud($event)">
+        <select (change)="seleccionMagnitud($event)">
             <option *ngFor="let magnitud of magnitudes" selected>
                 {{magnitud.nombre}} 
             </option>
@@ -27,11 +27,13 @@
         <button *ngIf="(calendario.nombre)=='Nuevo'" type="submit" [disabled]="!calendarioForm.valid"(click)="nuevoCalendario()">
                 Agregar
         </button>
+        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="salvarCalendari()" >Salvar</button>
+        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="borrarCalendario()" >Borrar</button>
     </form>
 
     <form [formGroup]="perfilForm">
         <a>Perfil </a>
-        <select name="seleccion" id="seleccion" (change)="seleccionPerfil($event)">
+        <select (change)="seleccionPerfil($event)">
             <option *ngFor="let perfil of perfiles" selected>
                 {{perfil.nombre}}
             </option>
@@ -40,7 +42,25 @@
         <button *ngIf="(perfil.nombre)=='Nuevo'" type="submit" [disabled]="!perfilForm.valid"(click)="agregarPerfil()">
             Agregar
         </button>
+        <button *ngIf="(perfil).nombre!='Nuevo'" (click)="salvarPerfil()" >Salvar</button>
+        <button *ngIf="(perfil).nombre!='Nuevo'"  (click)="borrarPerfil()" >Borrar</button>
     </form>
+
+    <form [formGroup]="cultivoForm">
+        <a>Cultivo </a>
+        <select (change)="seleccionCultivo($event)">
+            <option *ngFor="let cultivo of cultivos" selected>
+                {{cultivo.nombre}}
+            </option>
+        </select>
+        <input *ngIf="(cultivo.nombre)=='Nuevo'"  type="text" formControlName="cultivo" required class="inForm">
+        <button *ngIf="(cultivo.nombre)=='Nuevo'" type="submit" [disabled]="!cultivoForm.valid"(click)="agregarCultivo()">
+            Agregar
+        </button>
+        <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="salvarCultivo()" >Salvar</button>
+        <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="borrarCultivo()" >Borrar</button>
+    </form>
+
 </div>
 <!--
 <div name="Botones_magnitudes" ALIGN="LEFT">

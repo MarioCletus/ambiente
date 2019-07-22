@@ -75,7 +75,7 @@ public class AmbienteRestController {
 		System.out.print("Get perfil ix: ");
 		return perfilService.getPerfil(ix);
 	}
-	
+
 	@CrossOrigin
 	@PostMapping("/perfil")
 	public void PefilNuevo(@RequestBody Perfil perfil) {

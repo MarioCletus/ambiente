@@ -33,31 +33,6 @@ export class PruebaComponent implements OnInit {
     calendario.date=fecha;
     calendario.nombre="Mi Calendario";
     console.log("Prueba");
-    let miPerfil:Perfil={id:null,nombre:"MiPerfilDePrueba",magnitudes:[]};
-    this.service.nuevoPerfil(miPerfil).subscribe(()=>{console.log("Creé el perfil"); 
-        calendario.perfiles=[miPerfil];
-        this.service.nuevoCalendario(calendario).subscribe(()=>{
-            this.service.getCalendario().subscribe((cal:Array<Calendario>)=>{
-                console.log("Cantidad de calendarios:",cal.length);
-                let usuarios:Array<Usuario>;
-                this.service.getUsuarios().subscribe((data:Array<Usuario>)=>{
-                    usuarios=data;
-                    console.log("What!!");
-                    let usuario:Usuario;
-                    usuario=usuarios.pop();
-                    if(!usuario.calendarios)
-                      usuario.calendarios=[];
-                    usuario.calendarios.push(cal[0]);
-                    usuario.userName='Va-nina';
-                    console.log("Hasta acá bien",usuario);
-                    this.service.editarUsuario(usuario).subscribe(()=>{
-                        console.log("Usuario actualizado",usuario);
-                        this.service.getUsuarios().subscribe((user:Array<Usuario>)=>console.log("usuario:",user.pop()));
-                    });
-                });
-            });
-        });
-    });
   }
 
 }

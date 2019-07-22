@@ -11,6 +11,7 @@ public class PerfilServiceImp implements PerfilService{
 
 	@Autowired
 	private PerfilRepository repo;
+	
 
 	@Override
 	public void nuevoPerfil(Perfil perfil) {
@@ -40,6 +41,7 @@ public class PerfilServiceImp implements PerfilService{
 	public List<Perfil> getPerfiles() {
 		return repo.findAll();
 	}
+
 
 
 }

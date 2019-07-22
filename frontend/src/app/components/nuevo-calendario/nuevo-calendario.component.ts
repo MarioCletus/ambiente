@@ -28,7 +28,8 @@ export class NuevoCalendarioComponent implements OnInit {
 
   onSubmit(){
     if(this.userForm.valid){
-      let calendario:Calendario={id:null,nombre:'',perfiles:[],date:new Date()};
+      let calendario:Calendario=new Calendario();
+      calendario.nombre='';
       this.servicio.nuevoCalendario(calendario).subscribe(()=>{
         if(this.global.hayUsuario){
           this.servicio.editarUsuario(this.global.usuario).subscribe(()=>
