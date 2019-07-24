@@ -9,5 +9,5 @@ public interface CultivoService {
 	void borrarCultivo(Integer id);
 	Optional<Cultivo> getCultivo(Integer id);
 	List<Cultivo> getCultivos();
-
+	List<Perfil>getPerfilesCultivos(Integer id);
 }

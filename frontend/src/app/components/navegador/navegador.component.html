@@ -6,6 +6,6 @@
     <a class="navbar-brand" routerLink="/Actual" routerLinkActive="active" >Estado actual</a>
     <a class="navbar-brand" routerLink="/Configuracion" routerLinkActive="active" >Configurar Ambiente</a>
     <a *ngIf="!global.hayUsuario" class="navbar-brand" routerLink="/Registro" routerLinkActive="active">Iniciar Sesion</a>
-    <a *ngIf="global.hayUsuario"class="navbar-brand" routerLink="/Registro" routerLinkActive="active">{{global.usuario.nombreUsuario}}</a>
+    <a *ngIf="global.hayUsuario"class="navbar-brand" routerLink="/Registro" routerLinkActive="active">{{global.usuario.userName}}</a>
 </nav>
 <router-outlet></router-outlet>

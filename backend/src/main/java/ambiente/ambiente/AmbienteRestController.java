@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import ambiente.auxiliar.WrapperUsrCal;
+import ambiente.auxiliar.WrapperUsrCul;
+import ambiente.auxiliar.WrapperUsrMag;
+import ambiente.auxiliar.WrapperUsrPerf;
+
 @RestController
 public class AmbienteRestController {
 	@Autowired
@@ -57,6 +62,8 @@ public class AmbienteRestController {
 		magnitudService.borrarMagnitud(id);
 	}
 
+	
+
 //Servicios para perfil
 	
 	@Autowired
@@ -96,9 +103,9 @@ public class AmbienteRestController {
 		System.out.println("Delete perfil:");
 		perfilService.borrarPerfil(id);
 	}
-
-	//Servicios para Usuario
-	
+/*******************************************************************************************************
+ * Servicios para Usuario
+ *******************************************************************************************************/
 		@Autowired
 		private UsuarioServiceImp usuarioService;
 		
@@ -136,6 +143,11 @@ public class AmbienteRestController {
 			usuarioService.borrarUsuario(id);
 		}
 		
+		/*
+		 * Añade la magnitud al usuario.
+		 * Tanto la magnitad como el usuario vienen envueltas en wrapper. 
+		 */
+		
 		@CrossOrigin
 		@PutMapping("/usuario/magnitud")
 		public void usuarioAddMagnitud(@RequestBody WrapperUsrMag wrapper) {
@@ -158,15 +170,124 @@ public class AmbienteRestController {
 					);
 			usuarioService.usuarioAddMagnitud(usuario,magnitud);
 		}
-	
+		/*
+		 * Añade la magnitud al usuario.
+		 * Tanto la magnitad como el usuario vienen envueltas en wrapper. 
+		 */
+		
+		@CrossOrigin
+		@PutMapping("/usuario/perfil")
+		public void usuarioAddPerfil(@RequestBody WrapperUsrPerf wrapper) {
+			Usuario usuario;
+			Perfil perfil;
+			usuario=wrapper.usuario;
+			perfil=wrapper.perfil;
+			System.out.println("Put usuarioAddPerfil:" + usuario.getId() + " " + perfil.getNombre());
+			System.out.println("{" 
+					+ usuario.getId()       + "    "
+					+ usuario.getNombre()   + "    "
+					+ usuario.getApellido() + "    "
+					+ usuario.getUserName() + "    "
+					+ usuario.getPassword() + "    "
+					+ "cultivos: " + usuario.getCultivos().size() + "    "
+					+ "calendarios: " + usuario.getCalendarios().size() + "    "
+					+ "perfiles: " + usuario.getPerfiles().size() + "    "
+					+ "magnitudes: " + usuario.getMagnitudes().size() + "    "
+					+ "}"
+					);
+			usuarioService.usuarioAddPerfil(usuario,perfil);
+		}
+
+		
+		@CrossOrigin
+		@PutMapping("/usuario/cultivo")
+		public void usuarioAddCultivo(@RequestBody WrapperUsrCul wrapper) {
+			Usuario usuario;
+			Cultivo cultivo;
+			usuario=wrapper.usuario;
+			cultivo=wrapper.cultivo;
+			System.out.println("Put usuarioAddCultivo:" + usuario.getId() + " " + cultivo.getNombre());
+			System.out.println("{" 
+					+ usuario.getId()       + "    "
+					+ usuario.getNombre()   + "    "
+					+ usuario.getApellido() + "    "
+					+ usuario.getUserName() + "    "
+					+ usuario.getPassword() + "    "
+					+ "cultivos: " + usuario.getCultivos().size() + "    "
+					+ "calendarios: " + usuario.getCalendarios().size() + "    "
+					+ "perfiles: " + usuario.getPerfiles().size() + "    "
+					+ "magnitudes: " + usuario.getMagnitudes().size() + "    "
+					+ "}"
+					);
+			usuarioService.usuarioAddCultivo(usuario,cultivo);
+		}
+
+		@CrossOrigin
+		@PutMapping("/usuario/calendario")
+		public void usuarioAddCalendario(@RequestBody WrapperUsrCal wrapper) {
+			Usuario usuario;
+			Calendario calendario;
+			usuario=wrapper.usuario;
+			calendario=wrapper.calendario;
+			System.out.println("Put usuarioAddCalendario:" + usuario.getId() + " " + calendario.getNombre());
+			System.out.println("{" 
+					+ usuario.getId()       + "    "
+					+ usuario.getNombre()   + "    "
+					+ usuario.getApellido() + "    "
+					+ usuario.getUserName() + "    "
+					+ usuario.getPassword() + "    "
+					+ "cultivos: " + usuario.getCultivos().size() + "    "
+					+ "calendarios: " + usuario.getCalendarios().size() + "    "
+					+ "perfiles: " + usuario.getPerfiles().size() + "    "
+					+ "magnitudes: " + usuario.getMagnitudes().size() + "    "
+					+ "}"
+					);
+			usuarioService.usuarioAddCalendario(usuario,calendario);
+		}
+
+		
+		@CrossOrigin
+		@GetMapping("/usuario/magnitud/{userId}")
+		public List<Magnitud> getMagnitudUsr(@PathVariable Integer userId){
+			System.out.print("Get magnitud usuario userId: ");
+			return usuarioService.getMagnitudUsr(userId);
+
+		}
+
+		@CrossOrigin
+		@GetMapping("/usuario/perfil/{userId}")
+		public List<Perfil> getPerfilesUsusario(@PathVariable Integer userId){
+			System.out.print("Get perfil usuario userId: ");
+			return usuarioService.getPerfilesUsr(userId);
+
+		}
+
+		@CrossOrigin
+		@GetMapping("/usuario/calendario/{userId}")
+		public List<Calendario> getCalendariosUsusario(@PathVariable Integer userId){
+			System.out.print("Get calendarios usuario userId: ");
+			return usuarioService.getCalendariosUsr(userId);
+
+		}
+
+		@CrossOrigin
+		@GetMapping("/usuario/cultivo/{userId}")
+		public List<Cultivo> getCultivosUsusario(@PathVariable Integer userId){
+			System.out.print("Get cultivos usuario userId: ");
+			return usuarioService.getCultivosUsr(userId);
+
+		}
+
 		//Servicio de registro.		
 		@CrossOrigin
 		@PostMapping("/password")
 		public Usuario isRegistered(@RequestBody Usuario usuario) {
 			return usuarioService.isRegsitered(usuario);
 		}
-		//Servicios para calendario
 		
+		/**************************************************************************************************
+		 *   Servicios para calendario 
+		 **************************************************************************************************/
 		@Autowired
 		private CalendarioServiceImp calendarioService;
 		
@@ -243,5 +364,11 @@ public class AmbienteRestController {
 			System.out.println("Delete cultivo:");
 			cultivoService.borrarCultivo(id);
 		}
-
+		
+		@CrossOrigin
+		@GetMapping("/cultivo/perfil/{perfilId}")
+		public List<Perfil> getPerfilesCultivo(@PathVariable Integer perfilId){
+			System.out.print("Get perfiles cultivos usuario perfilId: ");
+			return cultivoService.getPerfilesCultivos(perfilId);
+		}
 }

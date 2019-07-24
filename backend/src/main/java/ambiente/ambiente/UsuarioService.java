@@ -10,4 +10,13 @@ public interface UsuarioService {
 	Optional<Usuario> getUsuario(Integer id);
 	List<Usuario> getUsuarios();
 	Usuario isRegsitered(Usuario usuario);
+	void usuarioAddMagnitud(Usuario usuario, Magnitud magnitud);
+	List<Magnitud>getMagnitudUsr(Integer id);
+	void usuarioAddPerfil(Usuario usuario, Perfil perfil);
+	List<Perfil>getPerfilesUsr(Integer id);
+	List<Calendario>getCalendariosUsr(Integer id);
+	List<Cultivo>getCultivosUsr(Integer id);
+	void usuarioAddCultivo(Usuario user, Cultivo cultivo);
+	void usuarioAddCalendario(Usuario user, Calendario calendario);
+
 }

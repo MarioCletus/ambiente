@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms'
 import { BackendServiceService } from 'src/app/services/backend-service.service';
 import { Usuario } from 'src/app/classes/usuario';
 import { GlobalService } from 'src/app/services/global.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class RegistroComponent implements OnInit {
   registro=false;
   estaRegistrado=false;
   
-  constructor(private formBuilder: FormBuilder,private servicio:BackendServiceService,private global:GlobalService ) { }
+  constructor(private formBuilder: FormBuilder,private servicio:BackendServiceService,private global:GlobalService ,private route:Router) { }
   ngOnInit() {
 /*    this.userForm = this.formBuilder.group({
       nombre: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
@@ -29,6 +30,10 @@ export class RegistroComponent implements OnInit {
     });*/
   }
 
+  /*********************************************************************************
+   * Chequeo si los datos de usuario ingresados son correctos. Si lo son inicializo
+   * el usuario global en el serivico global.
+   *********************************************************************************/
   onSubmit(){
     if(this.userForm.valid){
       let usuario:Usuario=new Usuario();
@@ -38,10 +43,15 @@ export class RegistroComponent implements OnInit {
           if(usuario){
             console.log("Esta registrado",usuario);
             this.global.usuario=usuario;
+            this.global.hayUsuario=true;
+            this.userForm.get('passWord').setValue('');
+            this.userForm.get('nombreUsuario').setValue('');
+            this.route.navigate(['Principal']);
           }
           else{
             console.log("No esta registrado");
             this.global.usuario=null;
+            this.global.hayUsuario=false;
           }
       });
     }
@@ -49,6 +59,8 @@ export class RegistroComponent implements OnInit {
   registrar(){
     this.registro=true;
   }
+
+  
   guardarUsuario(){
     let usuario:Usuario=new Usuario();
     usuario.nombre=this.userForm.get('nombre').value;

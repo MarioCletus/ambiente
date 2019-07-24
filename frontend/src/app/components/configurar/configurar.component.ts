@@ -26,8 +26,11 @@ export class ConfigurarComponent implements OnInit {
   private magnitud:Magnitud={id:0,nombre:"",listOfFloats:[]};
   private calendarios:Array<Calendario>=[];
   private calendario:Calendario={nombre:"",id:null,cultivo:null,date:new Date()};
-  private cultivo:Cultivo={id:null,nombre:"",perfiles:[]};
+  private cultivo:Cultivo=new Cultivo();//{id:null,nombre:"",perfiles:[]};
   private cultivos:Array<Cultivo>=[];
+  private todosLosPerfiles=true;
+  private todosLasMagnitudes=false;
+  
 
   private calendarioForm = new FormGroup({
     calendario: new FormControl(''),
@@ -41,6 +44,10 @@ export class ConfigurarComponent implements OnInit {
   private cultivoForm = new FormGroup({
     cultivo: new FormControl(''),
   });
+  private perfilTodosForm = new FormGroup({
+    selPerfilTodo: new FormControl(''),
+  });
+
   
   @ViewChild(GraficaComponent) grafica: GraficaComponent;
 
@@ -57,26 +64,47 @@ export class ConfigurarComponent implements OnInit {
 //Funciones
 
 cargarDatos(){
-  this.servicio.getCalendario().subscribe((data: Calendario[]) =>{
+  this.servicio.getCalendarioUsuario(this.global.usuario).subscribe((data: Calendario[]) =>{
     this.calendarios=data;//Carga los datos en magnitudes
     if(data.length){
       this.calendario=data[data.length-1];
     }
   });
 
-  this.servicio.getMagnitudes().subscribe((data: Magnitud[]) =>{
+  this.servicio.getMagnitudUsuario(this.global.usuario).subscribe((data: Magnitud[]) =>{
     this.magnitudes=data;//Carga los datos en magnitudes
     if(data.length){
       this.magnitud=data[data.length-1];
       this.datos=data[data.length-1].listOfFloats;
     }
   });
-  this.servicio.getPerfiles().subscribe((data: Perfil[]) =>{
-    this.perfiles=data;//Carga los datos en Perfiles
+  
+  if(this.todosLosPerfiles){
+    console.log("Todos los perfiles")
+    this.servicio.getPerfilesUsuario(this.global.usuario).subscribe((data: Perfil[]) =>{
+      this.perfiles=data;//Carga los datos en Perfiles
+      if(data.length){
+        this.perfil=data[data.length-1];  
+      }
+    });
+  }
+
+  this.servicio.getCultivoUsuario(this.global.usuario).subscribe((data: Cultivo[]) =>{
+    this.cultivos=data;//Carga los datos en Perfiles
     if(data.length){
-      this.perfil=data[data.length-1];  
+      this.cultivo=data[data.length-1];
+      if(!this.todosLosPerfiles){
+        console.log("Solo perfiles del cultivo");
+        this.servicio.getPerfilesCultivo(this.cultivo).subscribe((data:Perfil[])=>{
+          this.perfiles=data;
+          if(data.length){
+            this.perfil=data[data.length-1];  
+          }
+        });
+      }
     }
   });
+
 }
 /***************************************************************
  *Selecciona una nombre desde el dropdown list y refresca 
@@ -159,7 +187,15 @@ agregarPerfil(){
   let nombre=this.perfilForm.get('perfil').value;
   this.perfilForm.get('perfil').setValue('');
   perfil.nombre=nombre;
-  this.servicio.nuevoPerfil(perfil).subscribe(()=>this.cargarDatos())
+  console.log("Voy a agregar el perfil",perfil,"al usuario",this.global.usuario);
+  this.servicio.usuarioAddPerfil(this.global.usuario,perfil).subscribe(()=>{
+    this.servicio.getUsuario(this.usuario.id).subscribe((usr:Usuario)=>{
+      this.usuario=usr;
+      this.global.usuario=this.usuario;
+      console.log("Usuario en agregar magnitud:",this.usuario,this.global.usuario);
+      this.cargarDatos()
+    });
+  });
 }
 
 asociarMagnitud(){
@@ -170,6 +206,7 @@ asociarMagnitud(){
       return;
     }
   });
+
   if(yaEstaAsociada)
     return;
   if(!this.perfil.magnitudes){//Si perfil.magnitudes no existe lo creo vacio.
@@ -194,6 +231,23 @@ nuevoCalendario(){
     });
 }
 
+agregarCalendario(){
+  let calendario:Calendario=new Calendario();
+  let nombre=this.calendarioForm.get('calendario').value;
+  this.calendarioForm.get('calendario').setValue('');
+  calendario.nombre=nombre;
+  console.log("Voy a agregar el calendario",calendario,"al usuario",this.global.usuario);
+  this.servicio.usuarioAddCalendario(this.global.usuario,calendario).subscribe(()=>{
+    this.servicio.getUsuario(this.usuario.id).subscribe((usr:Usuario)=>{
+      this.usuario=usr;
+      this.global.usuario=this.usuario;
+      console.log("Usuario en agregar magnitud:",this.usuario,this.global.usuario);
+      this.cargarDatos()
+    });
+  });  
+}
+
+
 seleccionCalendario(event){
   let index=event.target.selectedIndex;
   this.calendario=this.calendarios[index];
@@ -205,11 +259,42 @@ seleccionCultivo(event){
 }
 
 agregarCultivo(){
-  
+  let cultivo:Cultivo=new Cultivo();
+  let nombre=this.cultivoForm.get('cultivo').value;
+  this.cultivoForm.get('cultivo').setValue('');
+  cultivo.nombre=nombre;
+  console.log("Voy a agregar el cultivo",cultivo,"al usuario",this.global.usuario);
+  this.servicio.usuarioAddCultivo(this.global.usuario,cultivo).subscribe(()=>{
+    this.servicio.getUsuario(this.usuario.id).subscribe((usr:Usuario)=>{
+      this.usuario=usr;
+      this.global.usuario=this.usuario;
+      console.log("Usuario en agregar magnitud:",this.usuario,this.global.usuario);
+      this.cargarDatos()
+    });
+  });  
 }
 borrarCultivo(){
   
 }
 
+irARegistro(){
+  this.route.navigate(['Registro']);
 
+}
+onItemMagChange(opcion){
+  if(opcion=='todo'){
+    this.todosLasMagnitudes=true;
+  }else{
+    this.todosLasMagnitudes=false;
+  }
+  this.cargarDatos();
+}
+onItemPerfChange(opcion){
+  if(opcion=='todo'){
+    this.todosLosPerfiles=true;
+  }else{
+    this.todosLosPerfiles=false;
+  }
+  this.cargarDatos();
+}
 }

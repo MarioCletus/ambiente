@@ -16,7 +16,7 @@
           <input type="text" formControlName="passWord" class="form-control" placeholder="Password">
       </div>
   </div>
-  <button *ngIf="!registro" type="submit" (click)="registrar()">Registrarse</button>
+  <button *ngIf="!registro" type="button" (click)="registrar()">Registrarse</button>
   <button *ngIf="!registro" type="submit">Ingresar</button>
   <button *ngIf="registro" type="submit" (click)="guardarUsuario()">Guardar</button>
   <button *ngIf="registro" type="submit" (click)="cancelRegistro()">Cancelar</button>

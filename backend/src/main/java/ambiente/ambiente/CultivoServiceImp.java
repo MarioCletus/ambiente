@@ -1,5 +1,6 @@
 package ambiente.ambiente;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,9 @@ public class CultivoServiceImp implements CultivoService{
 
 	@Autowired
 	private CultivoRepository repo;
+	@Autowired
+	private PerfilServiceImp psImp;
+	
 	
 
 	@Override
@@ -41,6 +45,27 @@ public class CultivoServiceImp implements CultivoService{
 		return null;
 	}
 
+	@Override
+	public List<Perfil> getPerfilesCultivos(Integer cultivoId) {
+		
+		System.out.println("getPerfilesCultivo " + cultivoId);
+		List<Integer> perfiles_id=new ArrayList<Integer>();
+		List<Perfil> perfiles=new ArrayList<Perfil>();
+		perfiles_id=repo.getPerfilesCultivo(cultivoId);         //Trae los id de las magnitudes asociadas al usuario, desde la tabla usuario_magnitud.
+		Optional <Perfil> optional;
+		for(Integer perfIds : perfiles_id) {
+		     optional=psImp.getPerfil(perfIds);
+		     optional.ifPresent(perfil->{
+		    	 perfiles.add(perfil);
+		     });
+		}
+		perfiles.forEach((perf)->{
+			System.out.println(perf.getNombre());
+		});
+		return perfiles;
+	}
+
+	
 
 
 }

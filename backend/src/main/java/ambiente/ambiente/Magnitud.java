@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+//import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -25,7 +25,8 @@ public class Magnitud {
 	
 	@Column(name="nombre")
 	private String nombre;
-	
+
+	/*
 	@ManyToOne(targetEntity=Usuario.class)
 	Usuario usuario;
 
@@ -47,7 +48,7 @@ public class Magnitud {
 	public void setPerfil(Perfil perfil) {
 		this.perfil = perfil;
 	}
-
+*/
 	public Integer getId() {
 		return id;
 	}

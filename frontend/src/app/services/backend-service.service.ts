@@ -18,6 +18,7 @@ export class BackendServiceService {
   };
   constructor(private _http: HttpClient) { 
   }
+  urlBase='http://localhost:8080';
 
   getMagnitudes(){
     let urlValores='http://localhost:8080/magnitud';
@@ -44,16 +45,12 @@ export class BackendServiceService {
     return respuesta;
  }
 
+  
+
 //Servicios para perfil
 getPerfiles(){
   let urlValores='http://localhost:8080/perfil';
   let respuesta=this._http.get(urlValores);
-  return respuesta;
-}
-
-getPerfilesUsuario(usuario:Usuario){
-  let urlValores='http://localhost:8080/perfil/usuario/';
-  let respuesta=this._http.get(urlValores + usuario.id);
   return respuesta;
 }
 
@@ -107,6 +104,42 @@ borrarUsuario(usuario:Usuario){
   return respuesta;
 }
 
+
+//Devuelve la lista de magnitudes del usuario pasado como argumento.
+getMagnitudUsuario(usuario:Usuario){
+  console.log("Quiero las magnitudes de ",usuario);
+  let respuesta=this._http.get(this.urlUsuario +'/magnitud/'+ usuario.id);
+  return respuesta;
+}
+
+getPerfilesUsuario(usuario:Usuario){
+  let respuesta=this._http.get(this.urlUsuario +'/perfil/' + usuario.id);
+  return respuesta;
+}
+
+
+getCalendarioUsuario(usuario:Usuario){
+  console.log("Quiero los calendarios de ",usuario);
+  let respuesta=this._http.get(this.urlUsuario +'/calendario/' + usuario.id);
+  return respuesta;
+}
+
+getCultivoUsuario(usuario:Usuario){
+  console.log("Quiero los cultivos de ",usuario);
+  let respuesta=this._http.get(this.urlUsuario +'/cultivo/' + usuario.id);
+  return respuesta;
+}
+
+getPerfilesCultivo(cultivo:Cultivo){
+  let respuesta=this._http.get(this.urlBase +'/cultivo/perfil/' + cultivo.id);
+  return respuesta;
+}
+
+getMagnitudesPerfil(perfil:Perfil){
+  let respuesta=this._http.get(this.urlBase +'/perfil/magnitud/' + perfil.id);
+  return respuesta;
+}
+
 usuarioAddMagnitud(usuario:Usuario,magnitud:Magnitud){
   console.log("UsuarioAddMagnitud",usuario,magnitud);
   let respuesta=this._http.put(this.urlUsuario + '/' +'magnitud',{usuario,magnitud});
@@ -114,17 +147,18 @@ usuarioAddMagnitud(usuario:Usuario,magnitud:Magnitud){
 }
 
 usuarioAddPerfil(usuario:Usuario,perfil:Perfil){
-  let respuesta=this._http.put(this.urlUsuario + '/'+ 'perfil' + '/' + usuario.id,perfil);
+  console.log("UsuarioAddPerfil",usuario,perfil);
+  let respuesta=this._http.put(this.urlUsuario + '/'+ 'perfil' ,{usuario,perfil});
   return respuesta;
 }
 
 usuarioAddCultivo(usuario:Usuario,cultivo:Cultivo){
-  let respuesta=this._http.put(this.urlUsuario + '/'+ 'cultivo' + '/' + usuario.id,cultivo);
+  let respuesta=this._http.put(this.urlUsuario + '/'+ 'cultivo',{usuario,cultivo});
   return respuesta;
 }
 
 usuarioAddCalendario(usuario:Usuario,calendario:Calendario){
-  let respuesta=this._http.put(this.urlUsuario + '/'+ 'calendario' + '/' + usuario.id,calendario);
+  let respuesta=this._http.put(this.urlUsuario + '/'+ 'calendario/'+ usuario.id,calendario);
   return respuesta;
 }
 

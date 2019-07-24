@@ -1,6 +1,14 @@
-<div *ngIf="existeUsuario">Existe: {{usuario.userName}}</div>
+<div *ngIf="existeUsuario">
+<h6 ALIGN="LEFT">Grafica Magnitudes</h6>
 <app-grafica [datosIn]="datos"></app-grafica>
-<div class="config-container">
+<div class="config-container" ALIGN="LEFT">
+    <h6 ALIGN="LEFT">Seleccion de magnitudes</h6>
+    <div>Mostrar magnitudes por
+        <form [formGroup]="perfilTodosForm">
+            <input type="radio" name="selPerfilTodo" value="perfil" (change)="onItemMagChange('perfil')"/>perfil
+            <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemMagChange('todo')" checked="checked"/>todas
+        </form>
+    </div>
     <form [formGroup]="magnitudForm">
         <a>Magnitud </a>
         <select (change)="seleccionMagnitud($event)">
@@ -15,22 +23,14 @@
         <button *ngIf="(magnitud).nombre!='Nuevo'" id="Salvar" (click)="salvarMagnitud()" >Salvar</button>
         <button *ngIf="(magnitud).nombre!='Nuevo'" id="Borrar" (click)="borrarMagnitud()" >Borrar</button>
     </form>
-    <form [formGroup]="calendarioForm">
-        <a>Calendario </a>
-        <select (change)="seleccionCalendario($event)">
-            <option *ngFor="let calendario of calendarios" selected>
-                {{calendario.nombre}}
-            </option>
-            <option>Nuevo</option>
-        </select>
-        <input *ngIf="(calendario.nombre)=='Nuevo'"  type="text" formControlName="calendario" required class="inForm">
-        <button *ngIf="(calendario.nombre)=='Nuevo'" type="submit" [disabled]="!calendarioForm.valid"(click)="nuevoCalendario()">
-                Agregar
-        </button>
-        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="salvarCalendari()" >Salvar</button>
-        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="borrarCalendario()" >Borrar</button>
-    </form>
-
+    <br>
+    <h6 ALIGN="LEFT">Seleccion de perfiles</h6>
+    <div>Mostrar perfiles por
+            <form>
+                <input type="radio" name="selPerfilTodo" value="cultivo" (change)="onItemPerfChange('cultivo')"/>cultivo
+                <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemPerfChange('todo')" checked="checked"/>todas
+            </form>
+    </div>
     <form [formGroup]="perfilForm">
         <a>Perfil </a>
         <select (change)="seleccionPerfil($event)">
@@ -45,7 +45,7 @@
         <button *ngIf="(perfil).nombre!='Nuevo'" (click)="salvarPerfil()" >Salvar</button>
         <button *ngIf="(perfil).nombre!='Nuevo'"  (click)="borrarPerfil()" >Borrar</button>
     </form>
-
+    <br>
     <form [formGroup]="cultivoForm">
         <a>Cultivo </a>
         <select (change)="seleccionCultivo($event)">
@@ -60,10 +60,35 @@
         <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="salvarCultivo()" >Salvar</button>
         <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="borrarCultivo()" >Borrar</button>
     </form>
-
-</div>
 <!--
+    <form [formGroup]="calendarioForm">
+        <a>Calendario </a>
+        <select (change)="seleccionCalendario($event)">
+            <option *ngFor="let calendario of calendarios" selected>
+                {{calendario.nombre}}
+            </option>
+            <option>Nuevo</option>
+        </select>
+        <input *ngIf="(calendario.nombre)=='Nuevo'"  type="text" formControlName="calendario" required class="inForm">
+        <button *ngIf="(calendario.nombre)=='Nuevo'" type="submit" [disabled]="!calendarioForm.valid"(click)="nuevoCalendario()">
+                Agregar
+        </button>
+        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="salvarCalendario()" >Salvar</button>
+        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="borrarCalendario()" >Borrar</button>
+    </form>
+-->
+</div>
+
 <div name="Botones_magnitudes" ALIGN="LEFT">
         <a><button *ngFor="let magnitud of perfil.magnitudes" (click)="desasociarMagnitud(magnitud)"> {{magnitud.nombre}} X</button></a>
 </div>
--->
+
+</div>
+<div *ngIf="!existeUsuario" ALIGN="center">
+    Para configurar primero debe loguearse.
+    <div>
+        <button type="submit" (click)="irARegistro()">
+            Ir a registro
+        </button>
+    </div>
+</div>
