@@ -26,29 +26,6 @@ public class Magnitud {
 	@Column(name="nombre")
 	private String nombre;
 
-	/*
-	@ManyToOne(targetEntity=Usuario.class)
-	Usuario usuario;
-
-	@ManyToOne(targetEntity=Perfil.class)
-	Perfil perfil;
-	
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
-	public Perfil getPerfil() {
-		return perfil;
-	}
-
-	public void setPerfil(Perfil perfil) {
-		this.perfil = perfil;
-	}
-*/
 	public Integer getId() {
 		return id;
 	}

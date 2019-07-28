@@ -1,0 +1,17 @@
+.split {
+    width: 100%;
+}
+.left{
+    width: 60%;
+    float: left;
+}
+
+.right{
+    width: 40%;
+    float: right;
+}
+
+.wrapper{
+    background-color: black;
+
+}

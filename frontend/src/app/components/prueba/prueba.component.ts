@@ -25,7 +25,7 @@ export class PruebaComponent implements OnInit {
 
   click(){
     console.log("Creando nuevo cultivo");
-    this.service.nuevoCultivo({id:null,nombre:"Nuevo Cultivo",perfiles:[]}).subscribe();
+    this.service.nuevoCultivo({id:null,nombre:"Nuevo Cultivo",dias:[]}).subscribe();
  
     this.misDatos=[100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100];
     let calendario:Calendario=new Calendario();

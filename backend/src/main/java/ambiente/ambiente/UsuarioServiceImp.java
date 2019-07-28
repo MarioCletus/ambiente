@@ -61,9 +61,9 @@ public class UsuarioServiceImp implements UsuarioService{
 	}
 	
 	@Override
-	public void nuevoUsuario(Usuario usuario) {
-		inicializaUsuario(usuario);
-		repo.save(usuario);
+	public Usuario nuevoUsuario(Usuario usuario) {
+//		inicializaUsuario(usuario);
+		return repo.save(usuario);
 	}
 
 	@Override

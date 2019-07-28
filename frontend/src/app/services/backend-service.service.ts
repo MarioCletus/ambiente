@@ -5,6 +5,7 @@ import { Perfil } from '../classes/perfil';
 import { Usuario } from '../classes/usuario';
 import { Calendario } from '../classes/calendario';
 import { Cultivo } from '../classes/cultivo';
+import { Dia } from '../classes/dia';
 
 @Injectable({
   providedIn: 'root'
@@ -107,7 +108,6 @@ borrarUsuario(usuario:Usuario){
 
 //Devuelve la lista de magnitudes del usuario pasado como argumento.
 getMagnitudUsuario(usuario:Usuario){
-  console.log("Quiero las magnitudes de ",usuario);
   let respuesta=this._http.get(this.urlUsuario +'/magnitud/'+ usuario.id);
   return respuesta;
 }
@@ -119,13 +119,11 @@ getPerfilesUsuario(usuario:Usuario){
 
 
 getCalendarioUsuario(usuario:Usuario){
-  console.log("Quiero los calendarios de ",usuario);
   let respuesta=this._http.get(this.urlUsuario +'/calendario/' + usuario.id);
   return respuesta;
 }
 
 getCultivoUsuario(usuario:Usuario){
-  console.log("Quiero los cultivos de ",usuario);
   let respuesta=this._http.get(this.urlUsuario +'/cultivo/' + usuario.id);
   return respuesta;
 }
@@ -224,4 +222,19 @@ borrarCultivo(cultivo:Cultivo){
   return respuesta;
 }
 
+agregarDia(cultivo:Cultivo,dias:Array<Dia>){
+  let respuesta=this._http.put(this.urlBase + '/cultivo/dia',{cultivo,dias});
+  return respuesta; 
+}
+
+nuevoDia(dia:Dia){
+  let respuesta=this._http.post(this.urlBase + '/dia',dia);
+  return respuesta; 
+}
+
+perfilAddMagnitud(perfil:Perfil,magnitud:Magnitud){
+  let respuesta=this._http.put(this.urlBase + '/perfil/magnitud',{perfil,magnitud});
+  return respuesta; 
+
+}
 }

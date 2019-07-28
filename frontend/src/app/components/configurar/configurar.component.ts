@@ -9,6 +9,9 @@ import { BackendServiceService } from 'src/app/services/backend-service.service'
 import { Router } from '@angular/router';
 import { Calendario } from 'src/app/classes/calendario';
 import { Cultivo } from 'src/app/classes/cultivo';
+import { IgxCalendarComponent, IgxDialogComponent } from 'igniteui-angular';
+import { forEach } from '@angular/router/src/utils/collection';
+import { Dia } from 'src/app/classes/dia';
 
 
 @Component({
@@ -29,23 +32,25 @@ export class ConfigurarComponent implements OnInit {
   private cultivo:Cultivo=new Cultivo();//{id:null,nombre:"",perfiles:[]};
   private cultivos:Array<Cultivo>=[];
   private todosLosPerfiles=true;
-  private todosLasMagnitudes=false;
-  
+  private todosLasMagnitudes=true;
+  private selMag=false;     //Variable para activar a o desactivar botones de salvar Magnitudes.
+  private selCultivo=false; //Variable para activar a o desactivar botones de salvar Cultivo.
+  private selPerfil=false;  //Variable para activar a o desactivar botones de salvar Perfil.
 
+  
+  @ViewChild("calendar") public calendar: IgxCalendarComponent;
+  
   private calendarioForm = new FormGroup({
-    calendario: new FormControl(''),
+    calendario: new FormControl('')
   });
   private perfilForm = new FormGroup({
-    perfil: new FormControl(''),
+    perfil: new FormControl('')
   });
   private magnitudForm = new FormGroup({
-    magnitud: new FormControl(''),
+    magnitud: new FormControl('')
   });
   private cultivoForm = new FormGroup({
-    cultivo: new FormControl(''),
-  });
-  private perfilTodosForm = new FormGroup({
-    selPerfilTodo: new FormControl(''),
+    cultivo: new FormControl('')
   });
 
   
@@ -59,6 +64,9 @@ export class ConfigurarComponent implements OnInit {
     if(this.usuario){
         this.existeUsuario=true;
         this.cargarDatos();
+        if(!this.usuario.magnitudes || this.usuario.magnitudes.length==0){
+          this.datos=[10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10];
+        }
     }
   }
 //Funciones
@@ -71,51 +79,86 @@ cargarDatos(){
     }
   });
 
-  this.servicio.getMagnitudUsuario(this.global.usuario).subscribe((data: Magnitud[]) =>{
-    this.magnitudes=data;//Carga los datos en magnitudes
-    if(data.length){
-      this.magnitud=data[data.length-1];
-      this.datos=data[data.length-1].listOfFloats;
-    }
-  });
+  if(this.todosLasMagnitudes){
+    console.log("Muestro todas las magnitudes");
+    this.servicio.getMagnitudUsuario(this.global.usuario).subscribe((data: Magnitud[]) =>{
+      this.magnitudes=data;//Carga los datos en magnitudes
+      if(data.length){
+        this.magnitud=data[data.length-1];
+        this.datos=data[data.length-1].listOfFloats;
+        this.selMag=false;
+      }
+      else{
+        this.selMag=true;
+      }
+    });
+  }
   
   if(this.todosLosPerfiles){
-    console.log("Todos los perfiles")
     this.servicio.getPerfilesUsuario(this.global.usuario).subscribe((data: Perfil[]) =>{
       this.perfiles=data;//Carga los datos en Perfiles
       if(data.length){
+        this.selPerfil=false;
         this.perfil=data[data.length-1];  
+      }
+      else{
+        this.selPerfil=true;
       }
     });
   }
 
   this.servicio.getCultivoUsuario(this.global.usuario).subscribe((data: Cultivo[]) =>{
-    this.cultivos=data;//Carga los datos en Perfiles
+    this.cultivos=data;//Carga los datos en cultivo
     if(data.length){
+      this.selCultivo=false;
       this.cultivo=data[data.length-1];
       if(!this.todosLosPerfiles){
-        console.log("Solo perfiles del cultivo");
-        this.servicio.getPerfilesCultivo(this.cultivo).subscribe((data:Perfil[])=>{
-          this.perfiles=data;
-          if(data.length){
-            this.perfil=data[data.length-1];  
-          }
+        this.servicio.getPerfilesCultivo(this.cultivo).subscribe((listPerfiles:Perfil[])=>{
+          this.perfiles=listPerfiles;
         });
+        console.log("getCultivoUsuario",this.perfiles);
       }
+      if(this.perfiles.length){
+        this.selPerfil=false;
+        if(!this.todosLasMagnitudes){
+          this.servicio.getMagnitudesPerfil(this.perfil).subscribe((data: Magnitud[]) =>{
+            this.magnitudes=data;//Carga los datos en magnitudes
+            if(data.length){
+              this.magnitud=data[data.length-1];
+              this.datos=data[data.length-1].listOfFloats;
+              this.selMag=false;
+            }
+            else{
+              this.selMag=true;
+            }
+          });
+        }
+      }
+      else
+        this.selPerfil=true;
+    }
+    else{
+      this.selCultivo=true;
     }
   });
-
 }
 /***************************************************************
  *Selecciona una nombre desde el dropdown list y refresca 
  el grafico en pantalla. 
  ***************************************************************/
 public seleccionMagnitud(event){
-  console.log("Seleccion de magnitud");
+  console.log("Seleccion de magnitud",event.target.value);
   let index=event.target.selectedIndex;
-  this.magnitud=this.magnitudes[index];
-  this.datos=this.magnitud.listOfFloats;
-  this.grafica.setValores('chart component',this.magnitud.listOfFloats);
+  if(index){
+    index--;
+    this.magnitud=this.magnitudes[index];
+    this.datos=this.magnitud.listOfFloats;
+    this.grafica.setValores('chart component',this.magnitud.listOfFloats);
+    this.selMag=false;
+  }
+  else{
+    this.selMag=true;
+  }
 }
 /*****************************************************
  * Se agrega la magnitud con los valores de la grafica 
@@ -178,8 +221,16 @@ salvarPerfil(){}
 borrarPerfil(){}
 
 seleccionPerfil(event){
+  console.log("seleccion perfil")
   let index=event.target.selectedIndex;
-  this.perfil=this.perfiles[index];
+  if(index){
+    index--;
+    this.perfil=this.perfiles[index];
+    this.selPerfil=false;
+  }else{
+    this.selPerfil=true;
+  }
+
 }
 
 agregarPerfil(){
@@ -197,8 +248,11 @@ agregarPerfil(){
     });
   });
 }
-
+/********************************************************
+ * Asocia la magnitud de la grafica al perfil actual
+ *******************************************************/
 asociarMagnitud(){
+  console.log("asociarMagnitud")
   let yaEstaAsociada=false;
   this.perfil.magnitudes.forEach(mag=>{
     if(mag.nombre==this.magnitud.nombre){
@@ -209,11 +263,15 @@ asociarMagnitud(){
 
   if(yaEstaAsociada)
     return;
-  if(!this.perfil.magnitudes){//Si perfil.magnitudes no existe lo creo vacio.
+/*  if(!this.perfil.magnitudes){//Si perfil.magnitudes no existe lo creo vacio.
     this.perfil.magnitudes=[];}
-
   this.perfil.magnitudes.push(this.magnitud);
-  this.servicio.editarPerfil(this.perfil).subscribe();
+  this.servicio.editarPerfil(this.perfil).subscribe();*/
+  console.log("Llego aca?",this.perfil,this.magnitud);
+  this.servicio.perfilAddMagnitud(this.perfil,this.magnitud).subscribe((perfil:Perfil)=>{
+    this.perfil=perfil;
+  });
+
 
 }
 
@@ -247,7 +305,6 @@ agregarCalendario(){
   });  
 }
 
-
 seleccionCalendario(event){
   let index=event.target.selectedIndex;
   this.calendario=this.calendarios[index];
@@ -255,7 +312,13 @@ seleccionCalendario(event){
 
 seleccionCultivo(event){
   let index=event.target.selectedIndex;
-  this.cultivo=this.cultivos[index];
+  if(index){
+    this.selCultivo=false;
+    this.cultivo=this.cultivos[index-1];
+  }
+  else
+  this.selCultivo=true;
+  
 }
 
 agregarCultivo(){
@@ -274,8 +337,38 @@ agregarCultivo(){
   });  
 }
 borrarCultivo(){
+  let id = this.cultivo.id;
+  let index;
+
+  index=this.cultivos.find(function(cul){
+    return cul.id==id
+  });
+  this.cultivos.splice(index,1);
+  this.servicio.borrarCultivo(this.cultivo).subscribe(()=>{   
+
+  });
   
 }
+
+/****************************************************************************
+ * Asocia el perfil actual al rango de fechas seleccionadas en el calendario
+ ****************************************************************************/
+asociarPerfil(){
+  console.log("Asociar perfil",this.calendar.value[0]);
+  if(this.calendar.selectedDates.length==0){
+    console.log("No hay fechas seleccionadas");
+    return;
+  }
+  let dias:Array<Dia>=[];
+  for(let date of this.calendar.selectedDates){
+    let dia:Dia=new Dia();
+    dia.fecha=date;
+    dia.perfil_id=this.perfil.id;
+    dias.push(dia);
+  }
+  this.servicio.agregarDia(this.cultivo,dias).subscribe();
+}
+
 
 irARegistro(){
   this.route.navigate(['Registro']);
@@ -296,5 +389,11 @@ onItemPerfChange(opcion){
     this.todosLosPerfiles=false;
   }
   this.cargarDatos();
+}
+
+verifyRange(dates:Date[]){
+  //console.log(dates[0],dates.length)
+  console.log(this.calendar.value[0],"Largo:");
+
 }
 }

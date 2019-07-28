@@ -16,9 +16,6 @@ export class CalendarioComponent implements OnInit {
     }
 
     public verifyRange(dates: Date[]) {
-/*      if (dates.length > 5) {
-        this.calendar.selectDate(dates[0]);
-        this.dialog.open();
-      }*/
+      console.log(dates[0],dates.length);
     }
 }

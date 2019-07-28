@@ -2,81 +2,83 @@
 <h6 ALIGN="LEFT">Grafica Magnitudes</h6>
 <app-grafica [datosIn]="datos"></app-grafica>
 <div class="config-container" ALIGN="LEFT">
+    <div class="wrapper">
+    <div class="split left">
     <h6 ALIGN="LEFT">Seleccion de magnitudes</h6>
     <div>Mostrar magnitudes por
-        <form [formGroup]="perfilTodosForm">
-            <input type="radio" name="selPerfilTodo" value="perfil" (change)="onItemMagChange('perfil')"/>perfil
-            <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemMagChange('todo')" checked="checked"/>todas
+        <form>
+            <input type="radio" name="selPerfilTodo" value="perfil" (change)="onItemMagChange('perfil')" checked="checked"/>perfil {{perfil.nombre}}
+            <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemMagChange('todo')"/>todas
         </form>
     </div>
     <form [formGroup]="magnitudForm">
         <a>Magnitud </a>
-        <select (change)="seleccionMagnitud($event)">
+        <select (change)="seleccionMagnitud($event)" (onload)="seleccionMagnitud($event)">
+            <option value="Nuevo">Nuevo</option>
             <option *ngFor="let magnitud of magnitudes" selected>
-                {{magnitud.nombre}} 
+                {{magnitud.nombre}}
             </option>
         </select>
-        <input *ngIf="(magnitud).nombre=='Nuevo'" type="text" formControlName="magnitud" placeholder="Nombre" required class="inForm" value="miValue">
-        <button *ngIf="(magnitud).nombre=='Nuevo'" type="submit" (click)="agregarMagnitud()">
+        <input *ngIf="(selMag)" type="text" formControlName="magnitud" placeholder="Nombre" required class="inForm" value="miValue">
+        <button *ngIf="(selMag)" type="submit" (click)="agregarMagnitud()">
             Agregar
         </button>
-        <button *ngIf="(magnitud).nombre!='Nuevo'" id="Salvar" (click)="salvarMagnitud()" >Salvar</button>
-        <button *ngIf="(magnitud).nombre!='Nuevo'" id="Borrar" (click)="borrarMagnitud()" >Borrar</button>
+        <button *ngIf="!(selMag)" id="Salvar" (click)="salvarMagnitud()" >Salvar</button>
+        <button *ngIf="!(selMag)" id="Borrar" (click)="borrarMagnitud()" >Borrar</button>
+    </form>
+    <button *ngIf="!(selMag)" (click)="asociarMagnitud()" >Añadir la magnitud al perfil {{perfil.nombre}}</button>
+    <br>
+    <h6 ALIGN="LEFT">Seleccion de cultivo</h6>
+    <form [formGroup]="cultivoForm">
+            <a>Cultivo </a>
+            <select (change)="seleccionCultivo($event)">
+                <option>Nuevo</option>
+                <option *ngFor="let cultivo of cultivos" selected>
+                    {{cultivo.nombre}}
+                </option>
+            </select>
+            <input *ngIf="(selCultivo)"  type="text" formControlName="cultivo" required class="inForm">
+            <button *ngIf="(selCultivo)" type="submit" [disabled]="!cultivoForm.valid"(click)="agregarCultivo()">
+                Agregar
+            </button>
+            <button *ngIf="!(selCultivo)" (click)="salvarCultivo()" >Salvar</button>
+            <button *ngIf="!(selCultivo)" (click)="borrarCultivo()" >Borrar</button>
     </form>
     <br>
+
     <h6 ALIGN="LEFT">Seleccion de perfiles</h6>
     <div>Mostrar perfiles por
-            <form>
-                <input type="radio" name="selPerfilTodo" value="cultivo" (change)="onItemPerfChange('cultivo')"/>cultivo
-                <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemPerfChange('todo')" checked="checked"/>todas
-            </form>
+        <form>
+            <input type="radio" name="selPerfilTodo" value="cultivo" (change)="onItemPerfChange('cultivo')" checked="checked"/>cultivo {{cultivo.nombre}}
+            <input type="radio" name="selPerfilTodo" value="todo" (change)="onItemPerfChange('todo')"/>todas
+        </form>
     </div>
-    <form [formGroup]="perfilForm">
-        <a>Perfil </a>
-        <select (change)="seleccionPerfil($event)">
-            <option *ngFor="let perfil of perfiles" selected>
-                {{perfil.nombre}}
-            </option>
-        </select>
-        <input *ngIf="(perfil.nombre)=='Nuevo'"  type="text" formControlName="perfil" required class="inForm">
-        <button *ngIf="(perfil.nombre)=='Nuevo'" type="submit" [disabled]="!perfilForm.valid"(click)="agregarPerfil()">
-            Agregar
-        </button>
-        <button *ngIf="(perfil).nombre!='Nuevo'" (click)="salvarPerfil()" >Salvar</button>
-        <button *ngIf="(perfil).nombre!='Nuevo'"  (click)="borrarPerfil()" >Borrar</button>
-    </form>
-    <br>
-    <form [formGroup]="cultivoForm">
-        <a>Cultivo </a>
-        <select (change)="seleccionCultivo($event)">
-            <option *ngFor="let cultivo of cultivos" selected>
-                {{cultivo.nombre}}
-            </option>
-        </select>
-        <input *ngIf="(cultivo.nombre)=='Nuevo'"  type="text" formControlName="cultivo" required class="inForm">
-        <button *ngIf="(cultivo.nombre)=='Nuevo'" type="submit" [disabled]="!cultivoForm.valid"(click)="agregarCultivo()">
-            Agregar
-        </button>
-        <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="salvarCultivo()" >Salvar</button>
-        <button *ngIf="(cultivo).nombre!='Nuevo'" (click)="borrarCultivo()" >Borrar</button>
-    </form>
-<!--
-    <form [formGroup]="calendarioForm">
-        <a>Calendario </a>
-        <select (change)="seleccionCalendario($event)">
-            <option *ngFor="let calendario of calendarios" selected>
-                {{calendario.nombre}}
-            </option>
-            <option>Nuevo</option>
-        </select>
-        <input *ngIf="(calendario.nombre)=='Nuevo'"  type="text" formControlName="calendario" required class="inForm">
-        <button *ngIf="(calendario.nombre)=='Nuevo'" type="submit" [disabled]="!calendarioForm.valid"(click)="nuevoCalendario()">
+    <div>
+        <form [formGroup]="perfilForm">
+            <a>Perfil </a>
+            <select (change)="seleccionPerfil($event)">
+                <option>Nuevo</option>
+                <option *ngFor="let perfil of perfiles" selected>
+                    {{perfil.nombre}}
+                </option>
+            </select>
+            <input *ngIf="(selPerfil)"  type="text" formControlName="perfil" required class="inForm">
+            <button *ngIf="(selPerfil)" type="submit" [disabled]="!perfilForm.valid"(click)="agregarPerfil()">
                 Agregar
-        </button>
-        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="salvarCalendario()" >Salvar</button>
-        <button *ngIf="(calendario).nombre!='Nuevo'" (click)="borrarCalendario()" >Borrar</button>
-    </form>
--->
+            </button>
+            <button *ngIf="!(selPerfil)" (click)="salvarPerfil()" >Salvar</button>
+            <button *ngIf="!(selPerfil)"  (click)="borrarPerfil()" >Borrar</button>
+        </form>
+    </div>
+    <button *ngIf="!(selPerfil)" (click)="asociarPerfil()" >Aceptar rango de dias para perfil: {{perfil.nombre}}</button>
+    </div>
+
+    <div class="split right">
+        <igx-calendar #calendar selection="range" (onSelection)="verifyRange($event)"></igx-calendar>
+    </div>
+    </div>
+
+    <br>
 </div>
 
 <div name="Botones_magnitudes" ALIGN="LEFT">
@@ -92,3 +94,4 @@
         </button>
     </div>
 </div>
+

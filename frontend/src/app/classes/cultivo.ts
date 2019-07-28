@@ -1,7 +1,9 @@
 import { Perfil } from './perfil';
+import { Dia } from './dia';
 
 export class Cultivo {
     public id:number;
     public nombre:string;
-    public perfiles:Array<Perfil>;
+    public dias:Array<Dia>;
+
 }

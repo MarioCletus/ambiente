@@ -12,8 +12,8 @@ public class MagnitudServiceImp implements MagnitudService{
 	private MagnitudRepository repo;
 	
 	@Override
-	public void nuevoMagnitud(Magnitud magnitud) {
-		repo.save(magnitud);
+	public Magnitud nuevoMagnitud(Magnitud magnitud) {
+		return repo.save(magnitud);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package ambiente.ambiente;
 
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,11 +19,28 @@ public class Cultivo {
 	@Column(name = "nombre")
 	private String nombre;
 
- 	@OneToMany(targetEntity=Perfil.class)
-	List<Perfil> perfiles;
+// 	@OneToMany(targetEntity=Perfil.class)
+//	List<Perfil> perfiles;
 
 	
-    public Integer getId() {
+ 	@OneToMany(targetEntity=Dia.class)
+	List<Dia> dias;
+
+	public void addDias(List<Dia> dias) {
+		for(Dia dia:dias) {
+			this.dias.add(dia);	
+		}
+	}
+ 	
+	public List<Dia> getDias() {
+		return dias;
+	}
+
+	public void setDias(List<Dia> dias) {
+		this.dias = dias;
+	}
+
+	public Integer getId() {
 		return id;
 	}
 
@@ -40,12 +56,12 @@ public class Cultivo {
 		this.nombre = nombre;
 	}
 
-	public List<Perfil> getPerfiles() {
+/*	public List<Perfil> getPerfiles() {
 		return perfiles;
 	}
 
 	public void setPerfiles(List<Perfil> perfiles) {
 		this.perfiles = perfiles;
 	}
-
+*/
 }

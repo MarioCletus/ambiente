@@ -13,8 +13,8 @@ public class CalendarioServiceImp implements CalendarioService{
 	private CalendarioRepository repo;
 
 	@Override
-	public void nuevoCalendario(Calendario calendario) {
-		repo.save(calendario);
+	public Calendario nuevoCalendario(Calendario calendario) {
+		return repo.save(calendario);
 	}
 
 	@Override

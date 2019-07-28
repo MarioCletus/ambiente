@@ -1,5 +1,6 @@
 package ambiente.ambiente;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +12,12 @@ public class PerfilServiceImp implements PerfilService{
 
 	@Autowired
 	private PerfilRepository repo;
+	@Autowired
+	MagnitudServiceImp msImp=new MagnitudServiceImp();
 	
-
 	@Override
-	public void nuevoPerfil(Perfil perfil) {
-		repo.save(perfil);
+	public Perfil nuevoPerfil(Perfil perfil) {
+		return repo.save(perfil);
 	}
 
 	@Override
@@ -42,6 +44,32 @@ public class PerfilServiceImp implements PerfilService{
 		return repo.findAll();
 	}
 
+	@Override
+	public List<Magnitud> getMagnitudesPerfil(Integer perfilId) {
+		System.out.println("getMagnitudesPerfil" + perfilId);
+		List<Integer> magnitudes_id=new ArrayList<Integer>();
+		List<Magnitud> magnitudes=new ArrayList<Magnitud>();
+		magnitudes_id=repo.getMagnitudesPerfil(perfilId);         //Trae los id de las magnitudes asociadas al usuario, desde la tabla usuario_magnitud.
+		Optional <Magnitud> optional;
+		for(Integer magsIds : magnitudes_id) {
+		     optional=msImp.getMagnitud(magsIds);
+		     optional.ifPresent(magnitud->{
+		    	 magnitudes.add(magnitud);
+		     });
+		}
+		magnitudes.forEach((mag)->{
+			System.out.println(mag.getNombre());
+		});
+		return magnitudes;
+	}
+	
+	
+	public Perfil addMagnitud(Perfil perfil,Magnitud magnitud) {
+		magnitud.setId(null);
+		perfil.addMagnitud(msImp.nuevoMagnitud(magnitud));
+		return repo.save(perfil);
+	 
+	}
 
 
 }

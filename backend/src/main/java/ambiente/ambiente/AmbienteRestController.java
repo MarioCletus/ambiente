@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import ambiente.auxiliar.WrapperDia;
+import ambiente.auxiliar.WrapperPerfilMagnitud;
 import ambiente.auxiliar.WrapperUsrCal;
 import ambiente.auxiliar.WrapperUsrCul;
 import ambiente.auxiliar.WrapperUsrMag;
@@ -103,6 +105,23 @@ public class AmbienteRestController {
 		System.out.println("Delete perfil:");
 		perfilService.borrarPerfil(id);
 	}
+	
+	@CrossOrigin
+	@GetMapping("/perfil/magnitud/{perfilId}")
+	public List<Magnitud> getMagnitudesPerfil(@PathVariable Integer perfilId){
+		System.out.print("Get magnitud de perfil perfilId: " + perfilId);
+		return perfilService.getMagnitudesPerfil(perfilId);
+	}
+
+	@CrossOrigin
+	@PutMapping("/perfil/magnitud")
+	public Perfil actualizarPerfil(@RequestBody WrapperPerfilMagnitud wrapper) {
+		System.out.println("Put perfil magnitud:");
+		return perfilService.addMagnitud(wrapper.perfil,wrapper.magnitud);
+		
+	}
+
+	
 /*******************************************************************************************************
  * Servicios para Usuario
  *******************************************************************************************************/
@@ -368,7 +387,56 @@ public class AmbienteRestController {
 		@CrossOrigin
 		@GetMapping("/cultivo/perfil/{perfilId}")
 		public List<Perfil> getPerfilesCultivo(@PathVariable Integer perfilId){
-			System.out.print("Get perfiles cultivos usuario perfilId: ");
+			System.out.println("Get perfiles cultivos usuario perfilId: ");
 			return cultivoService.getPerfilesCultivos(perfilId);
 		}
+		
+		@CrossOrigin
+		@PutMapping("/cultivo/dia")
+		public void agregarDia(@RequestBody WrapperDia wrapper) {
+			System.out.println("Put cultivo dia:");
+			cultivoService.agregarDias(wrapper);
+		}
+		
+		/**************************************************************************************************
+		 *   Servicios para dia 
+		 **************************************************************************************************/
+		@Autowired
+		private DiaServiceImp diaService;
+		
+		@CrossOrigin
+		@GetMapping("/dia")
+		public List<Dia> getDias(){
+			System.out.println("Get dias:");
+			return diaService.getDias();
+		}
+
+		@CrossOrigin
+		@GetMapping("/dia/{ix}")
+		public Optional<Dia> getDiaIx(@PathVariable Integer ix){
+			System.out.print("Get dia ix: ");
+			return diaService.getDia(ix);
+		}
+		
+		@CrossOrigin
+		@PostMapping("/dia")
+		public void nuevoDia(@RequestBody Dia dia) {
+			diaService.nuevoDia(dia);
+		}
+		
+		@CrossOrigin
+		@PutMapping("/dia")
+		public void actualizarDia(@RequestBody Dia dia) {
+			System.out.println("Put dia:");
+			diaService.editarDia(dia);
+		}
+
+		@CrossOrigin
+		@DeleteMapping("/dia/{id}")
+		public void borrarDia(@PathVariable Integer id) {
+			System.out.println("Delete Dia:");
+			diaService.borrarDia(id);
+		}
+
+		
 }
